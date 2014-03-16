@@ -9,8 +9,9 @@
 
 <canvas id="viewport" width="800" height="600"></canvas>
 
-<form ui-keypress="{13:'searchWiki()'}">
+<form ng-submit='searchWiki()'>
 <input type="text" ng-model="wiki_search" typeahead="suggest for suggest in search_suggests" class="form-control">
+<input type="submit" id="submit" value="Submit">
 </form>
 <div ng-bind-html="wiki_text"></div>
 

@@ -11,7 +11,8 @@ angular.module('graphwikiApp')
 				$scope.search_suggests = data[1]
 				console.log(data)
 
-		searchWiki = () ->
+		$scope.searchWiki = () ->
+			console.log("hello")
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=pizza&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
 				$scope.wiki_text = data.parse.text['*']
 				console.log(data)
