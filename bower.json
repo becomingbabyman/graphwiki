@@ -2,6 +2,7 @@
   "name": "graphwiki",
   "version": "0.0.0",
   "dependencies": {
+    "jquery": "2.0.3",
     "angular": "1.2.6",
     "json3": "~3.2.6",
     "es5-shim": "~2.1.0",
@@ -10,7 +11,8 @@
     "angular-sanitize": "1.2.6",
     "angular-route": "1.2.6",
     "angular-bootstrap": "latest",
-    "angular-ui": "latest"
+    "angular-ui": "latest",
+	"arbor": "latest"
   },
   "devDependencies": {
     "angular-mocks": "1.2.6",
