@@ -2,9 +2,8 @@
 
    <h1>GraphWiki</h1>
 
-<form ng-submit='searchWiki()'>
-<input type="text" ng-model="wikiSearch" typeahead="suggest for suggest in searchSuggests" class="form-control">
-<input type="submit" id="submit" value="Submit">
+<form>
+<input type="text" ng-model="wikiSearch" typeahead="suggest for suggest in searchSuggests" typeahead-on-select="searchWiki()" class="form-control">
 </form>
 <div ng-bind-html="wikiText"></div>
 
