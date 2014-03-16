@@ -60,6 +60,7 @@ h1 {
   border: 1px solid #61528e;
 }
 .dropdown-menu li {
+  background: #fff;
   list-style: none;
   padding: .5em;
   border-bottom: 1px solid #61528e;
