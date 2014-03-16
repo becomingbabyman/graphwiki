@@ -67,6 +67,7 @@ angular.module('graphwikiApp')
 						
 						# draw a rectangle centered at pt
 						w = 10
+						ctx.fillText(node.name, pt.x-w/2, pt.y-w/2);
 						ctx.fillStyle = (if (node.data.alone) then "orange" else "black")
 						ctx.fillRect pt.x - w / 2, pt.y - w / 2, w, w
 						return
@@ -135,7 +136,7 @@ angular.module('graphwikiApp')
 				$scope.wikiText = data.parse.text['*']
 				# console.log(data)
 				nodeName = $scope.wikiSearch.replace(/[_ ]/g, '-')
-				graph.addEdge(($scope.browseHistory.slice(-1)[0] or "start"), nodeName)
+				graph.addEdge(($scope.browseHistory.slice(-1)[0] or "start"), nodeName, {length: 0.2})
 				$scope.browseHistory.push nodeName
 				# console.log nodeName, $scope.browseHistory
 				# console.log "last", $scope.browseHistory.slice(-1)[0]
