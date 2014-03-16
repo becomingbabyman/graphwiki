@@ -1,0 +1,30 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400);
+
+.source(@size: 1em, @weight: 300, @color: #000) {
+    font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
+    font-size: @size;
+    font-weight: @weight;
+    color: @color;
+}
+
+.transition() {
+    transition: ease-in-out .3s;
+    -webkit-transition: ease-in-out .3s;
+    -moz-transition: ease-in-out .3s;
+    -ms-transition: ease-in-out .3s;
+}
+
+html, body {
+    .source();
+}
+
+.dropdown-menu {
+    ul {
+        list-style: none;
+    }
+    .active {
+        background: #61528E;
+        color: #fff;
+        .transition();
+    }
+}
