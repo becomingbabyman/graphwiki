@@ -13,7 +13,7 @@ angular.module('graphwikiApp')
 
 		$scope.searchWiki = () ->
 			console.log("hello")
-			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=pizza&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
+			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + $scope.wikiSearch + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
 				$scope.wikiText = data.parse.text['*']
 				console.log(data)
 			).error (data) ->
