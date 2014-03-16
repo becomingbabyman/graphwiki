@@ -103,14 +103,30 @@ angular.module('graphwikiApp')
 						ctx.stroke()
 						ctx.restore()
 						
-						# node: {mass:#, p:{x,y}, name:"", data:{}};
-						# pt:   {x:#, y:#}  node position in screen coords
-						
-						# draw a rectangle centered at pt
-						# w = 10
-						# ctx.fillText(node.name, pt.x-w/2, pt.y-w/2);
-						# ctx.fillStyle = (if (node.data.alone) then "orange" else "black")
-						# ctx.fillRect pt.x - w / 2, pt.y - w / 2, w, w
+						# draw an arrowhead if this is a -> style edge
+						if edge.data.directed
+							ctx.save()
+							
+							# move to the head position of the edge we just drew
+							wt = (if not isNaN(weight) then parseFloat(weight) else 1)
+							arrowLength = 6 + wt
+							arrowWidth = 2 + wt
+							ctx.fillStyle = (if (color) then color else "#cccccc")
+							ctx.translate head.x, head.y
+							ctx.rotate Math.atan2(head.y - tail.y, head.x - tail.x)
+							
+							# delete some of the edge that's already there (so the point isn't hidden)
+							ctx.clearRect -arrowLength / 2, -wt / 2, arrowLength / 2, wt
+							
+							# draw the chevron
+							ctx.beginPath()
+							ctx.moveTo -arrowLength, arrowWidth
+							ctx.lineTo 0, 0
+							ctx.lineTo -arrowLength, -arrowWidth
+							ctx.lineTo -arrowLength * 0.8, -0
+							ctx.closePath()
+							ctx.fill()
+							ctx.restore()
 						return
 
 					return
@@ -122,11 +138,13 @@ angular.module('graphwikiApp')
 					nearest = null
 					dragged = null
 					oldmass = 1
+					time = null
 					
 					# set up a handler object that will initially listen for mousedowns then
 					# for moves and mouseups while dragging
 					handler =
 						clicked: (e) ->
+							time = Date.now()
 							pos = $(canvas).offset()
 							_mouseP = arbor.Point(e.pageX - pos.left, e.pageY - pos.top)
 							selected = nearest = dragged = particleSystem.nearest(_mouseP)
@@ -150,7 +168,11 @@ angular.module('graphwikiApp')
 							dragged.node.fixed = false  if dragged.node isnt null
 							dragged.node.tempMass = 1000
 							dragged = null
+							if Date.now() - time < 400
+								$scope.wikiSearch = selected.node.data.label
+								$scope.searchWiki(false)
 							selected = null
+							time = null
 							$(canvas).unbind "mousemove", handler.dragged
 							$(window).unbind "mouseup", handler.dropped
 							_mouseP = null
@@ -211,16 +233,17 @@ angular.module('graphwikiApp')
 				# console.log(data)
 
 
-		$scope.searchWiki = () ->
+		$scope.searchWiki = (trackSearch = true) ->
 			defered = $q.defer()
 
 			$scope.loading = true
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + $scope.wikiSearch + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
 				$scope.wikiText = data.parse.text['*']
 				nodeName = $scope.wikiSearch.replace(/[_ ]/g, '-')
-				edge = graph.addEdge(($scope.browseHistory.slice(-1)[0] or "start"), nodeName, {directed: true, length: 0.2, color: "black"})
-				if $scope.browseHistory.length == 0 then edge.source.data.label = "START"
-				edge.target.data.label = $scope.wikiSearch
+				if trackSearch
+					edge = graph.addEdge(($scope.browseHistory.slice(-1)[0] or "start"), nodeName, {directed: true, length: 0.2, color: "black"})
+					if $scope.browseHistory.length == 0 then edge.source.data.label = "START"
+					edge.target.data.label = $scope.wikiSearch
 				$scope.browseHistory.push nodeName
 
 				defered.resolve(data.parse.text['*'])
