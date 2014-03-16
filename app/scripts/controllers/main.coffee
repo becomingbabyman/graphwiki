@@ -19,18 +19,19 @@ angular.module('graphwikiApp')
 				)
 
 		$scope.searchWikiPromise = (query) ->
-			defered = $q.defer()
+			deferred = $q.defer()
+			$scope.loading = true
 
 			console.log("hello")
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + query + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
-				console.log(data)
 				$scope.wikiText = data.parse.text['*']
-				defered.resolve(data.parse.text['*'])
+				deferred.resolve(data.parse.text['*'])
+				$scope.loading = false
 			).error((data) ->
-				defered.reject("WIKIPEDIA FUCKED UP")
+				deferred.reject("WIKIPEDIA FUCKED UP")
 			)
 
-			defered.promise
+			deferred.promise
 
 
 		
