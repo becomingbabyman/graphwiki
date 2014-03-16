@@ -5,6 +5,7 @@ angular.module('graphwikiApp')
 
 		$scope.wikiSearch = ''
 		$scope.searchSuggests = []
+		$scope.browseHistory = []
 
 		$scope.$watch 'wikiSearch', () ->
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=opensearch&search=' + $scope.wikiSearch + '&limit=8&namespace=0&format=json&callback=JSON_CALLBACK').success (data) ->
@@ -21,8 +22,6 @@ angular.module('graphwikiApp')
 		$scope.searchWikiPromise = (query) ->
 			deferred = $q.defer()
 			$scope.loading = true
-
-			console.log("hello")
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + query + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
 				$scope.wikiText = data.parse.text['*']
 				deferred.resolve(data.parse.text['*'])
@@ -32,8 +31,6 @@ angular.module('graphwikiApp')
 			)
 
 			deferred.promise
-
-
 		
 		#
 		#  main.js
@@ -149,34 +146,72 @@ angular.module('graphwikiApp')
 
 			that
 
-		$(document).ready ->
-			sys = arbor.ParticleSystem(1000, 600, 0.5) # create the system with sensible repulsion/stiffness/friction
-			sys.parameters gravity: true
-			# use center-gravity to make the graph settle nicely (ymmv)
-			sys.renderer = Renderer("#viewport") # our newly created renderer will have its .init() method called shortly by sys...
+		# Create graph
+		graph = arbor.ParticleSystem(1000, 600, 0.5) # create the system with sensible repulsion/stiffness/friction
+		graph.parameters gravity: true
+		# use center-gravity to make the graph settle nicely (ymmv)
+		graph.renderer = Renderer("#viewport") # our newly created renderer will have its .init() method called shortly by sys...
+
+		$scope.$watch 'wikiSearch', () ->
+			$http.jsonp('http://en.wikipedia.org/w/api.php?action=opensearch&search=' + $scope.wikiSearch + '&limit=8&namespace=0&format=json&callback=JSON_CALLBACK').success (data) ->
+				$scope.searchSuggests = data[1]
+				# console.log(data)
+
+		$scope.searchWiki = () ->
+			defered = $q.defer()
+
+			console.log("hello")
+			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + $scope.wikiSearch + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
+				$scope.wikiText = data.parse.text['*']
+				# console.log(data)
+				nodeName = $scope.wikiSearch.replace(/[_ ]/g, '-')
+				graph.addEdge(($scope.browseHistory.slice(-1)[0] or "start"), nodeName)
+				$scope.browseHistory.push nodeName
+				# console.log nodeName, $scope.browseHistory
+				# console.log "last", $scope.browseHistory.slice(-1)[0]
+
+				graph.eachNode (n) ->
+					console.log "nodes", n
+				graph.eachEdge (n) ->
+					console.log "edges", n
+
+				console.log "end"
+				defered.resolve(data.parse.text['*'])
+			).error (data) ->
+				defered.reject("WIKIPEDIA FUCKED UP")
+
+			defered.promise
+		
+		
+
+		# $(document).ready ->
+		# 	sys = arbor.ParticleSystem(1000, 600, 0.5) # create the system with sensible repulsion/stiffness/friction
+		# 	sys.parameters gravity: true
+		# 	# use center-gravity to make the graph settle nicely (ymmv)
+		# 	sys.renderer = Renderer("#viewport") # our newly created renderer will have its .init() method called shortly by sys...
 			
-			# add some nodes to the graph and watch it go...
-			sys.addEdge "a", "b"
-			sys.addEdge "a", "c"
-			sys.addEdge "a", "d"
-			sys.addEdge "a", "e"
-			sys.addNode "f",
-				alone: true
-				mass: 0.25
+		# 	# add some nodes to the graph and watch it go...
+		# 	sys.addEdge "a", "b"
+		# 	sys.addEdge "a", "c"
+		# 	sys.addEdge "a", "d"
+		# 	sys.addEdge "a", "e"
+		# 	sys.addNode "f",
+		# 		alone: true
+		# 		mass: 0.25
 
 
-			# or, equivalently:
-			#
-			# sys.graft({
-			#   nodes:{
-			#     f:{alone:true, mass:.25}
-			#   }, 
-			#   edges:{
-			#     a:{ b:{},
-			#         c:{},
-			#         d:{},
-			#         e:{}
-			#     }
-			#   }
-			# })
+		# 	# or, equivalently:
+		# 	#
+		# 	# sys.graft({
+		# 	# 	nodes:{
+		# 	# 		f:{alone:true, mass:.25}
+		# 	# 	}, 
+		# 	# 	edges:{
+		# 	# 		a:{ b:{},
+		# 	# 			c:{},
+		# 	# 			d:{},
+		# 	# 			e:{}
+		# 	# 		}
+		# 	# 	}
+		# 	# })
 
