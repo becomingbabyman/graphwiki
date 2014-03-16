@@ -3,17 +3,18 @@
 angular.module('graphwikiApp')
 	.controller 'MainCtrl', ($scope, $http) ->
 
-		$scope.wiki_search = ''
-		$scope.search_suggests = []
+		$scope.wikiSearch = ''
+		$scope.searchSuggests = []
 
-		$scope.$watch 'wiki_search', () ->
-			$http.jsonp('http://en.wikipedia.org/w/api.php?action=opensearch&search=' + $scope.wiki_search + '&limit=8&namespace=0&format=json&callback=JSON_CALLBACK').success (data) ->
-				$scope.search_suggests = data[1]
+		$scope.$watch 'wikiSearch', () ->
+			$http.jsonp('http://en.wikipedia.org/w/api.php?action=opensearch&search=' + $scope.wikiSearch + '&limit=8&namespace=0&format=json&callback=JSON_CALLBACK').success (data) ->
+				$scope.searchSuggests = data[1]
 				console.log(data)
 
-		searchWiki = () ->
-			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=pizza&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
-				$scope.wiki_text = data.parse.text['*']
+		$scope.searchWiki = () ->
+			console.log("hello")
+			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + $scope.wikiSearch + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
+				$scope.wikiText = data.parse.text['*']
 				console.log(data)
 			).error (data) ->
 				$scope.blah = 'fail'
