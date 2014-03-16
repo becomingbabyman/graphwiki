@@ -13,9 +13,8 @@ angular.module('graphwikiApp')
 
     $scope.$watch('wiki_search', () ->
       $http.jsonp('http://en.wikipedia.org/w/api.php?action=opensearch&search=' + $scope.wiki_search + '&limit=8&namespace=0&format=json&callback=JSON_CALLBACK').success((data) ->
-        debugger;
         $scope.search_suggests = data[1]
-        console.log(data)
+        #console.log(data)
       )
     )
 

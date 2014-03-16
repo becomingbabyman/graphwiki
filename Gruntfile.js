@@ -340,6 +340,31 @@ module.exports = function (grunt) {
         configFile: 'karma.conf.js',
         singleRun: true
       }
+    },
+
+    less: {
+      development: {
+        // options: {
+        //   paths: ["assets/css"]
+        // },
+        files: {
+          'app/styles/styles.css': 'app/styles/styles.less'
+        }
+      // },
+      // production: {
+      //   options: {
+      //     paths: ["assets/css"],
+      //     cleancss: true,
+      //     modifyVars: {
+      //       imgPath: '"http://mycdn.com/path/to/images"',
+      //       bgColor: 'red'
+      //     }
+      //   },
+      //   files: {
+      //     "path/to/result.css": "path/to/source.less"
+      //   }
+      // }
+      }
     }
   });
 
@@ -394,4 +419,6 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+  grunt.loadNpmTasks('grunt-contrib-less');
 };
