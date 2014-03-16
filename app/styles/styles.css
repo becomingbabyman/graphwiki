@@ -1,8 +1,4 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400);
-.single-column {
-  width: 960px;
-  margin: 0 auto;
-}
 html,
 body {
   font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
@@ -37,6 +33,10 @@ h1 {
   color: #61528e;
   line-height: 1.5em;
 }
+.single-column {
+  width: 960px;
+  margin: 0 auto;
+}
 .main-button {
   color: #fff;
   background: #61528e;
@@ -53,7 +53,11 @@ h1 {
   border: 1px solid #61528e;
   color: #61528e;
 }
+.form-wrapper {
+  text-align: center;
+}
 .dropdown-menu {
+  text-align: left;
   position: absolute;
   width: 618px;
   padding-left: 0;
@@ -75,6 +79,90 @@ h1 {
   -webkit-transition: ease-in-out 0.3s;
   -moz-transition: ease-in-out 0.3s;
   -ms-transition: ease-in-out 0.3s;
+}
+@keyframes expand {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    z-index: 1;
+  }
+}
+.loader {
+  margin: 1em auto;
+  width: 600px;
+}
+/* -------------- Clock -------------- */
+.clock {
+  border-radius: 60px;
+  border: 3px solid #61528e;
+  height: 80px;
+  width: 80px;
+  position: relative;
+  margin: 0 auto;
+}
+.clock:after {
+  content: "";
+  position: absolute;
+  background-color: #61528e;
+  top: 2px;
+  left: 48%;
+  height: 38px;
+  width: 4px;
+  border-radius: 5px;
+  -webkit-transform-origin: 50% 97%;
+  transform-origin: 50% 97%;
+  -webkit-animation: grdAiguille 2s linear infinite;
+  animation: grdAiguille 2s linear infinite;
+}
+@-webkit-keyframes grdAiguille {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes grdAiguille {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.clock:before {
+  content: "";
+  position: absolute;
+  background-color: #61528e;
+  top: 6px;
+  left: 48%;
+  height: 35px;
+  width: 4px;
+  border-radius: 5px;
+  -webkit-transform-origin: 50% 94%;
+  transform-origin: 50% 94%;
+  -webkit-animation: ptAiguille 12s linear infinite;
+  animation: ptAiguille 12s linear infinite;
+}
+@-webkit-keyframes ptAiguille {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes ptAiguille {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 #forkongithub a {
   background: #61528E;
