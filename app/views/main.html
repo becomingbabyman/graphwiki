@@ -1,10 +1,15 @@
 <div class="single-column">
+	<h1>GraphWiki</h1>
 
-   <h1>GraphWiki</h1>
+	<div class="form-wrapper">
+		<form>
+			<input type="text" ng-model="wikiSearch" placeholder="Search Wikipedia" typeahead="suggest for suggest in searchSuggests" typeahead-on-select="searchWiki()" class="form-control">
+		</form>
+	<div>
 
-<form>
-<input type="text" ng-model="wikiSearch" typeahead="suggest for suggest in searchSuggests" typeahead-on-select="searchWiki()" class="form-control">
-</form>
-<div ng-bind-html="wikiText"></div>
+	<div ng-bind-html="wikiText"></div>
 
-<canvas id="viewport" width="800" height="600"></canvas>
+	<canvas id="viewport" width="800" height="600"></canvas>
+
+	<span id="forkongithub"><a href="https://github.com/smothers/graphwiki">Fork me on GitHub</a></span>
+</div>
