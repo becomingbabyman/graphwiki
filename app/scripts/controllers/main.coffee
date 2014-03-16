@@ -7,68 +7,126 @@ angular.module('graphwikiApp')
 		$scope.searchSuggests = []
 		$scope.browseHistory = []
 
+		# how we render the graph
 		Renderer = (canv) ->
 			canvas = $(canv).get(0)
 			ctx = canvas.getContext("2d")
-			particleSystem = undefined
+			gfx = arbor.Graphics(canvas)
+			particleSystem = null
 			that =
 				init: (system) ->
-					
-					#
-					# the particle system will call the init function once, right before the
-					# first frame is to be drawn. it's a good place to set up the canvas and
-					# to pass the canvas size to the particle system
-					#
-					# save a reference to the particle system for use in the .redraw() loop
 					particleSystem = system
-					
-					# inform the system of the screen dimensions so it can map coords for us.
-					# if the canvas is ever resized, screenSize should be called again with
-					# the new dimensions
 					particleSystem.screenSize canvas.width, canvas.height
-					particleSystem.screenPadding 80 # leave an extra 80px of whitespace per side
-					
-					# set up some event handlers to allow for node-dragging
+					particleSystem.screenPadding 40
 					that.initMouseHandling()
 					return
 
 				redraw: ->
+					return  unless particleSystem
+					gfx.clear() # convenience ƒ: clears the whole canvas rect
 					
-					# 
-					# redraw will be called repeatedly during the run whenever the node positions
-					# change. the new positions for the nodes can be accessed by looking at the
-					# .p attribute of a given node. however the p.x & p.y values are in the coordinates
-					# of the particle system rather than the screen. you can either map them to
-					# the screen yourself, or use the convenience iterators .eachNode (and .eachEdge)
-					# which allow you to step through the actual node objects but also pass an
-					# x,y point in the screen's coordinate system
-					# 
-					ctx.fillStyle = "white"
-					ctx.fillRect 0, 0, canvas.width, canvas.height
+					# draw the nodes & save their bounds for edge drawing
+					nodeBoxes = {}
+					particleSystem.eachNode (node, pt) ->
+						
+						# node: {mass:#, p:{x,y}, name:"", data:{}}
+						# pt:   {x:#, y:#}  node position in screen coords
+						
+						# determine the box size and round off the coords if we'll be 
+						# drawing a text label (awful alignment jitter otherwise...)
+						label = node.data.label or ""
+						w = ctx.measureText("" + label).width + 10
+						unless ("" + label).match(/^[ \t]*$/)
+							pt.x = Math.floor(pt.x)
+							pt.y = Math.floor(pt.y)
+						else
+							label = null
+						
+						# draw a rectangle centered at pt
+						if node.data.color
+							ctx.fillStyle = node.data.color
+						else
+							ctx.fillStyle = "rgba(0,0,0,.2)"
+						ctx.fillStyle = "white"  if node.data.color is "none"
+						if node.data.shape is "dot"
+							gfx.oval pt.x - w / 2, pt.y - w / 2, w, w,
+								fill: ctx.fillStyle
+
+							nodeBoxes[node.name] = [
+								pt.x - w / 2
+								pt.y - w / 2
+								w
+								w
+							]
+						else
+							gfx.rect pt.x - w / 2, pt.y - 10, w, 20, 4,
+								fill: ctx.fillStyle
+
+							nodeBoxes[node.name] = [
+								pt.x - w / 2
+								pt.y - 11
+								w
+								22
+							]
+						
+						# draw the text
+						if label
+							ctx.font = "12px Helvetica"
+							ctx.textAlign = "center"
+							ctx.fillStyle = "white"
+							ctx.fillStyle = "#333333"  if node.data.color is "none"
+							ctx.fillText label or "", pt.x, pt.y + 4
+							ctx.fillText label or "", pt.x, pt.y + 4
+						return
+
+					
+					# draw the edges
 					particleSystem.eachEdge (edge, pt1, pt2) ->
 						
 						# edge: {source:Node, target:Node, length:#, data:{}}
 						# pt1:  {x:#, y:#}  source position in screen coords
 						# pt2:  {x:#, y:#}  target position in screen coords
+						weight = edge.data.weight
+						color = edge.data.color
+						color = null  if not color or ("" + color).match(/^[ \t]*$/)
 						
-						# draw a line from pt1 to pt2
-						ctx.strokeStyle = "rgba(0,0,0, .333)"
-						ctx.lineWidth = 1
+						# find the start point
+						tail = intersect_line_box(pt1, pt2, nodeBoxes[edge.source.name])
+						head = intersect_line_box(tail, pt2, nodeBoxes[edge.target.name])
+						ctx.save()
 						ctx.beginPath()
-						ctx.moveTo pt1.x, pt1.y
-						ctx.lineTo pt2.x, pt2.y
+						ctx.lineWidth = (if (not isNaN(weight)) then parseFloat(weight) else 1)
+						ctx.strokeStyle = (if (color) then color else "#cccccc")
+						ctx.fillStyle = null
+						ctx.moveTo tail.x, tail.y
+						ctx.lineTo head.x, head.y
 						ctx.stroke()
-						return
-
-					particleSystem.eachNode (node, pt) ->
+						ctx.restore()
 						
-						# node: {mass:#, p:{x,y}, name:"", data:{}};
-						# pt:   {x:#, y:#}  node position in screen coords
-						
-						# draw a rectangle centered at pt
-						w = 10
-						ctx.fillStyle = (if (node.data.alone) then "orange" else "black")
-						ctx.fillRect pt.x - w / 2, pt.y - w / 2, w, w
+						# draw an arrowhead if this is a -> style edge
+						if edge.data.directed
+							ctx.save()
+							
+							# move to the head position of the edge we just drew
+							wt = (if not isNaN(weight) then parseFloat(weight) else 1)
+							arrowLength = 6 + wt
+							arrowWidth = 2 + wt
+							ctx.fillStyle = (if (color) then color else "#cccccc")
+							ctx.translate head.x, head.y
+							ctx.rotate Math.atan2(head.y - tail.y, head.x - tail.x)
+							
+							# delete some of the edge that's already there (so the point isn't hidden)
+							ctx.clearRect -arrowLength / 2, -wt / 2, arrowLength / 2, wt
+							
+							# draw the chevron
+							ctx.beginPath()
+							ctx.moveTo -arrowLength, arrowWidth
+							ctx.lineTo 0, 0
+							ctx.lineTo -arrowLength, -arrowWidth
+							ctx.lineTo -arrowLength * 0.8, -0
+							ctx.closePath()
+							ctx.fill()
+							ctx.restore()
 						return
 
 					return
@@ -76,7 +134,10 @@ angular.module('graphwikiApp')
 				initMouseHandling: ->
 					
 					# no-nonsense drag and drop (thanks springy.js)
+					selected = null
+					nearest = null
 					dragged = null
+					oldmass = 1
 					
 					# set up a handler object that will initially listen for mousedowns then
 					# for moves and mouseups while dragging
@@ -84,18 +145,18 @@ angular.module('graphwikiApp')
 						clicked: (e) ->
 							pos = $(canvas).offset()
 							_mouseP = arbor.Point(e.pageX - pos.left, e.pageY - pos.top)
-							dragged = particleSystem.nearest(_mouseP)
-							
-							# while we're dragging, don't let physics move the node
-							dragged.node.fixed = true  if dragged and dragged.node isnt null
+							selected = nearest = dragged = particleSystem.nearest(_mouseP)
+							dragged.node.fixed = true  if dragged.node isnt null
 							$(canvas).bind "mousemove", handler.dragged
 							$(window).bind "mouseup", handler.dropped
 							false
 
 						dragged: (e) ->
+							old_nearest = nearest and nearest.node._id
 							pos = $(canvas).offset()
 							s = arbor.Point(e.pageX - pos.left, e.pageY - pos.top)
-							if dragged and dragged.node isnt null
+							return  unless nearest
+							if dragged isnt null and dragged.node isnt null
 								p = particleSystem.fromScreen(s)
 								dragged.node.p = p
 							false
@@ -105,16 +166,53 @@ angular.module('graphwikiApp')
 							dragged.node.fixed = false  if dragged.node isnt null
 							dragged.node.tempMass = 1000
 							dragged = null
+							selected = null
 							$(canvas).unbind "mousemove", handler.dragged
 							$(window).unbind "mouseup", handler.dropped
 							_mouseP = null
 							false
 
-					
-					# start listening
 					$(canvas).mousedown handler.clicked
+					return
+
+			
+			# helpers for figuring out where to draw arrows (thanks springy.js)
+			intersect_line_line = (p1, p2, p3, p4) ->
+				denom = ((p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y))
+				return false  if denom is 0 # lines are parallel
+				ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom
+				ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom
+				return false  if ua < 0 or ua > 1 or ub < 0 or ub > 1
+				arbor.Point p1.x + ua * (p2.x - p1.x), p1.y + ua * (p2.y - p1.y)
+
+			intersect_line_box = (p1, p2, boxTuple) ->
+				p3 =
+					x: boxTuple[0]
+					y: boxTuple[1]
+
+				w = boxTuple[2]
+				h = boxTuple[3]
+				tl =
+					x: p3.x
+					y: p3.y
+
+				tr =
+					x: p3.x + w
+					y: p3.y
+
+				bl =
+					x: p3.x
+					y: p3.y + h
+
+				br =
+					x: p3.x + w
+					y: p3.y + h
+
+				intersect_line_line(p1, p2, tl, tr) or intersect_line_line(p1, p2, tr, br) or intersect_line_line(p1, p2, br, bl) or intersect_line_line(p1, p2, bl, tl) or false
 
 			that
+
+
 
 		# Create graph
 		graph = arbor.ParticleSystem(1000, 600, 0.5) # create the system with sensible repulsion/stiffness/friction
@@ -122,66 +220,27 @@ angular.module('graphwikiApp')
 		# use center-gravity to make the graph settle nicely (ymmv)
 		graph.renderer = Renderer("#viewport") # our newly created renderer will have its .init() method called shortly by sys...
 
+
 		$scope.$watch 'wikiSearch', () ->
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=opensearch&search=' + $scope.wikiSearch + '&limit=8&namespace=0&format=json&callback=JSON_CALLBACK').success (data) ->
 				$scope.searchSuggests = data[1]
 				# console.log(data)
 
+
 		$scope.searchWiki = () ->
 			defered = $q.defer()
 
-			console.log("hello")
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + $scope.wikiSearch + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
 				$scope.wikiText = data.parse.text['*']
-				# console.log(data)
 				nodeName = $scope.wikiSearch.replace(/[_ ]/g, '-')
-				graph.addEdge(($scope.browseHistory.slice(-1)[0] or "start"), nodeName)
+				edge = graph.addEdge(($scope.browseHistory.slice(-1)[0] or "start"), nodeName, {directed: true})
+				if $scope.browseHistory.length == 0 then edge.source.data.label = "START"
+				edge.target.data.label = $scope.wikiSearch
 				$scope.browseHistory.push nodeName
-				# console.log nodeName, $scope.browseHistory
-				# console.log "last", $scope.browseHistory.slice(-1)[0]
 
-				graph.eachNode (n) ->
-					console.log "nodes", n
-				graph.eachEdge (n) ->
-					console.log "edges", n
-
-				console.log "end"
 				defered.resolve(data.parse.text['*'])
 			).error (data) ->
 				defered.reject("WIKIPEDIA FUCKED UP")
 
 			defered.promise
 		
-		
-
-		# $(document).ready ->
-		# 	sys = arbor.ParticleSystem(1000, 600, 0.5) # create the system with sensible repulsion/stiffness/friction
-		# 	sys.parameters gravity: true
-		# 	# use center-gravity to make the graph settle nicely (ymmv)
-		# 	sys.renderer = Renderer("#viewport") # our newly created renderer will have its .init() method called shortly by sys...
-			
-		# 	# add some nodes to the graph and watch it go...
-		# 	sys.addEdge "a", "b"
-		# 	sys.addEdge "a", "c"
-		# 	sys.addEdge "a", "d"
-		# 	sys.addEdge "a", "e"
-		# 	sys.addNode "f",
-		# 		alone: true
-		# 		mass: 0.25
-
-
-		# 	# or, equivalently:
-		# 	#
-		# 	# sys.graft({
-		# 	# 	nodes:{
-		# 	# 		f:{alone:true, mass:.25}
-		# 	# 	}, 
-		# 	# 	edges:{
-		# 	# 		a:{ b:{},
-		# 	# 			c:{},
-		# 	# 			d:{},
-		# 	# 			e:{}
-		# 	# 		}
-		# 	# 	}
-		# 	# })
-
