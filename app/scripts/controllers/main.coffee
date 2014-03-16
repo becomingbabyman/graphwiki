@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('graphwikiApp')
-	.controller 'MainCtrl', ($scope, $http) ->
+	.controller 'MainCtrl', ($scope, $http, $q) ->
 
 		$scope.wikiSearch = ''
 		$scope.searchSuggests = []
@@ -12,12 +12,26 @@ angular.module('graphwikiApp')
 				console.log(data)
 
 		$scope.searchWiki = () ->
+			promise = $scope.searchWikiPromise($scope.wikiSearch)
+			promise.then(
+				(text) ->
+					$scope.wikiText = text
+				)
+
+		$scope.searchWikiPromise = (query) ->
+			defered = $q.defer()
+
 			console.log("hello")
-			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + $scope.wikiSearch + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
-				$scope.wikiText = data.parse.text['*']
+			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + query + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
 				console.log(data)
-			).error (data) ->
-				$scope.blah = 'fail'
+				$scope.wikiText = data.parse.text['*']
+				defered.resolve(data.parse.text['*'])
+			).error((data) ->
+				defered.reject("WIKIPEDIA FUCKED UP")
+			)
+
+			defered.promise
+
 
 		
 		#
