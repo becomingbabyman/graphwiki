@@ -1,10 +1,31 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400);
 
+@purple: #61528E;
+
 .source(@size: 1em, @weight: 300, @color: #000) {
     font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
     font-size: @size;
     font-weight: @weight;
     color: @color;
+    line-height: 1.5em;
+}
+
+.single-column {
+    width: 960px;
+    margin: 0 auto;
+}
+
+input {
+    .source();
+    padding: .5em;
+    width: 600px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px #AFAFAF solid;
+
+    &:focus {
+        border: 1px @purple solid;
+    }
 }
 
 .transition() {
@@ -19,11 +40,21 @@ html, body {
 }
 
 .dropdown-menu {
-    ul {
+    width: 618px;
+    padding-left: 0;
+    border: 1px solid @purple;
+
+    li {
         list-style: none;
+        padding: .5em;
+        border-bottom: 1px solid @purple;
+
+        &:hover {
+            cursor: pointer;
+        }
     }
     .active {
-        background: #61528E;
+        background: @purple;
         color: #fff;
         .transition();
     }

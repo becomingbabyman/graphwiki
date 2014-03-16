@@ -1,16 +1,19 @@
-<div class="header">
-    <ul class="nav nav-pills pull-right">
-        <li class="active"><a ng-href="#">Home</a></li>
-        <li><a ng-href="#">About</a></li>
-        <li><a ng-href="#">Contact</a></li>
-    </ul>
-    <h3 class="text-muted">graphwiki</h3>
+<div class="single-column">
+
+    <div class="header">
+        <ul class="nav nav-pills pull-right">
+            <li class="active"><a ng-href="#">Home</a></li>
+            <li><a ng-href="#">About</a></li>
+            <li><a ng-href="#">Contact</a></li>
+        </ul>
+        <h3 class="text-muted">graphwiki</h3>
+    </div>
+
+    <canvas id="viewport" width="800" height="600"></canvas>
+
+    <form ui-keypress="{13:'searchWiki()'}">
+    <input type="text" ng-model="wiki_search" typeahead="suggest for suggest in search_suggests" class="form-control">
+    </form>
+    <div ng-bind-html="wiki_text"></div>
+
 </div>
-
-<canvas id="viewport" width="800" height="600"></canvas>
-
-<form ui-keypress="{13:'searchWiki()'}">
-<input type="text" ng-model="wiki_search" typeahead="suggest for suggest in search_suggests" class="form-control">
-</form>
-<div ng-bind-html="wiki_text"></div>
-
