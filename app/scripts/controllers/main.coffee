@@ -168,7 +168,7 @@ angular.module('graphwikiApp')
 							dragged.node.fixed = false  if dragged.node isnt null
 							dragged.node.tempMass = 1000
 							dragged = null
-							if Date.now() - time < 400
+							if Date.now() - time < 400 and selected.node.data.label != "START"
 								$scope.wikiSearch = selected.node.data.label
 								$scope.searchWiki(false)
 							selected = null
@@ -242,8 +242,10 @@ angular.module('graphwikiApp')
 				nodeName = $scope.wikiSearch.replace(/[_ ]/g, '-')
 				if trackSearch
 					edge = graph.addEdge(($scope.browseHistory.slice(-1)[0] or "start"), nodeName, {directed: true, length: 0.2, color: "black"})
-					if $scope.browseHistory.length == 0 then edge.source.data.label = "START"
+					if $scope.browseHistory.length == 0
+						edge.source.data.label = "START"
 					edge.target.data.label = $scope.wikiSearch
+					edge.target.data.color = "black"
 				$scope.browseHistory.push nodeName
 
 				defered.resolve(data.parse.text['*'])
