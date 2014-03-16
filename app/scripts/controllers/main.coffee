@@ -11,26 +11,6 @@ angular.module('graphwikiApp')
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=opensearch&search=' + $scope.wikiSearch + '&limit=8&namespace=0&format=json&callback=JSON_CALLBACK').success (data) ->
 				$scope.searchSuggests = data[1]
 				console.log(data)
-
-		$scope.searchWiki = () ->
-			promise = $scope.searchWikiPromise($scope.wikiSearch)
-			promise.then(
-				(text) ->
-					$scope.wikiText = text
-				)
-
-		$scope.searchWikiPromise = (query) ->
-			deferred = $q.defer()
-			$scope.loading = true
-			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + query + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
-				$scope.wikiText = data.parse.text['*']
-				deferred.resolve(data.parse.text['*'])
-				$scope.loading = false
-			).error((data) ->
-				deferred.reject("WIKIPEDIA FUCKED UP")
-			)
-
-			deferred.promise
 		
 		#
 		#  main.js
@@ -162,6 +142,7 @@ angular.module('graphwikiApp')
 			defered = $q.defer()
 
 			console.log("hello")
+			$scope.loading = true
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + $scope.wikiSearch + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
 				$scope.wikiText = data.parse.text['*']
 				# console.log(data)
@@ -178,6 +159,7 @@ angular.module('graphwikiApp')
 
 				console.log "end"
 				defered.resolve(data.parse.text['*'])
+				$scope.loading = false
 			).error (data) ->
 				defered.reject("WIKIPEDIA FUCKED UP")
 
