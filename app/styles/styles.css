@@ -1,13 +1,57 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400);
+.single-column {
+  width: 960px;
+  margin: 0 auto;
+}
 html,
 body {
   font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
   font-size: 1em;
   font-weight: 300;
   color: #000000;
+  line-height: 1.5em;
+}
+input {
+  font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
+  font-size: 1em;
+  font-weight: 300;
+  color: #000000;
+  line-height: 1.5em;
+  padding: .5em;
+  width: 600px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px #AFAFAF solid;
+  transition: ease-in-out 0.3s;
+  -webkit-transition: ease-in-out 0.3s;
+  -moz-transition: ease-in-out 0.3s;
+  -ms-transition: ease-in-out 0.3s;
+}
+input:focus {
+  border: 1px #61528e solid;
+}
+h1 {
+  font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
+  font-size: 3em;
+  font-weight: 300;
+  color: #61528e;
+  line-height: 1.5em;
+}
+.dropdown-menu {
+  width: 618px;
+  padding-left: 0;
+  border: 1px solid #61528e;
+}
+.dropdown-menu li {
+  list-style: none;
+  padding: .5em;
+  border-bottom: 1px solid #61528e;
+}
+.dropdown-menu li:hover {
+  cursor: pointer;
 }
 .dropdown-menu .active {
-  background: #61528E;
+  background: #61528e;
   color: #fff;
   transition: ease-in-out 0.3s;
   -webkit-transition: ease-in-out 0.3s;
