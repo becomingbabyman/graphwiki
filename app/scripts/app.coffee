@@ -7,10 +7,13 @@ angular.module('graphwikiApp', [
   'ngRoute',
   'ui.bootstrap'
 ])
-  .config ($routeProvider) ->
-    $routeProvider
-      .when '/',
-        templateUrl: 'views/main.html'
-        controller: 'MainCtrl'
-      .otherwise
-        redirectTo: '/'
+  # .config ($routeProvider) ->
+  #   $routeProvider
+  #     .when '/',
+  #       templateUrl: 'views/main.html'
+  #       controller: 'MainCtrl'
+  #     .when '/wiki/:wiki',
+  #       templateUrl: 'views/main.html'
+  #       controller: 'MainCtrl'
+  #     # .otherwise
+  #     #   redirectTo: '/'

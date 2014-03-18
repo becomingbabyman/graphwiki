@@ -1,11 +1,18 @@
 'use strict'
 
 angular.module('graphwikiApp')
-	.controller 'MainCtrl', ($scope, $http, $q, $sce, $compile) ->
+	.controller 'MainCtrl', ($scope, $http, $q, $sce, $compile, $location) ->
 
 		$scope.wikiSearch = ''
 		$scope.searchSuggests = []
 		$scope.browseHistory = []
+
+
+		$scope.$watch(() ->
+			$location.path();
+		, () ->
+			console.log($location.path())
+		)
 
 		# how we render the graph
 		Renderer = (canv) ->
@@ -241,7 +248,7 @@ angular.module('graphwikiApp')
 				wikiLinkFixer = (text) ->
 					text.replace(/href="\/wiki\/(.*?)"/g, "href='#/wiki/$1'")
 				$scope.wikiText = wikiLinkFixer data.parse.text['*']
-				console.log($scope.wikiText)
+				# console.log($scope.wikiText)
 				# console.log(data)
 				nodeName = $scope.wikiSearch.replace(/[_ ]/g, '-')
 				if trackSearch
