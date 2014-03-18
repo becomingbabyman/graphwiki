@@ -10,3 +10,10 @@
 	npm install
 	bower install
 	grunt serve
+	
+##### To compile stylesheet
+	
+	grunt less
+
+Make sure to update gruntfile.js and set the path to your less files.
+	
