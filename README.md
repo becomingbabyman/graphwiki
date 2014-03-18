@@ -3,7 +3,7 @@
 
 ## See it live
 
-### [graphwiki.com](http://www.graphwiki.com)
+### [graphwiki.net](http://www.graphwiki.net)
 
 ## Getting Started
 
