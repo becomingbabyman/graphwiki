@@ -10,10 +10,14 @@ angular.module('graphwikiApp')
 		$scope.$watch(() ->
 			$location.path();
 		, () ->
-			console.log($location.path())
+			if $location.path() != '/'
+				$scope.wikiSearch = $location.path().substr(6)
+				$scope.searchWiki($scope.wikiSearch)
+				console.log($location.path())
 		)
 
-		$scope.showNodes = false;
+		$scope.showNodes = false
+		$scope.loading = false
 
 		$scope.toggleGraph = () -> 
 			$scope.showNodes = !$scope.showNodes
