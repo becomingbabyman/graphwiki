@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('graphwikiApp')
-	.controller 'MainCtrl', ($scope, $http, $q) ->
+	.controller 'MainCtrl', ($scope, $http, $q, $sce, $compile) ->
 
 		$scope.wikiSearch = ''
 		$scope.searchSuggests = []
@@ -238,7 +238,11 @@ angular.module('graphwikiApp')
 
 			$scope.loading = true
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + $scope.wikiSearch + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
-				$scope.wikiText = data.parse.text['*']
+				wikiLinkFixer = (text) ->
+					text.replace(/href="\/wiki\/(.*?)"/g, "href='#/wiki/$1'")
+				$scope.wikiText = wikiLinkFixer data.parse.text['*']
+				console.log($scope.wikiText)
+				# console.log(data)
 				nodeName = $scope.wikiSearch.replace(/[_ ]/g, '-')
 				if trackSearch
 					edge = graph.addEdge(($scope.browseHistory.slice(-1)[0] or "start"), nodeName, {directed: true, length: 0.2, color: "black"})
@@ -254,4 +258,3 @@ angular.module('graphwikiApp')
 				defered.reject("WIKIPEDIA FUCKED UP")
 
 			defered.promise
-		

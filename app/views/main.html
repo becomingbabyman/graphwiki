@@ -4,6 +4,13 @@
   
   <div class="form-wrapper">
     <h1>GraphWiki</h1>
+    <wikipedia></wikipedia>
+
+    <a ng-click="count = count + 1">Jello</a>
+      <button ng-click="count = count + 1" ng-init="count=0">
+   Increment
+ </button>
+ count: {{count}} 
     <form>
       <input type="text" ng-model="wikiSearch" placeholder="Search Wikipedia" typeahead="suggest for suggest in searchSuggests" typeahead-on-select="searchWiki()" class="form-control">
     </form>
