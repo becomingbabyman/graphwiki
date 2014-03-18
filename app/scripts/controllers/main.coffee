@@ -7,17 +7,16 @@ angular.module('graphwikiApp')
 		$scope.searchSuggests = []
 		$scope.browseHistory = []
 
+		$scope.showNodes = false
+		$scope.loading = false
+
 		$scope.$watch(() ->
 			$location.path();
 		, () ->
 			if $location.path() != '/'
 				$scope.wikiSearch = $location.path().substr(6)
 				$scope.searchWiki($scope.wikiSearch)
-				console.log($location.path())
 		)
-
-		$scope.showNodes = false
-		$scope.loading = false
 
 		$scope.toggleGraph = () -> 
 			$scope.showNodes = !$scope.showNodes
