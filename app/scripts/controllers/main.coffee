@@ -7,6 +7,11 @@ angular.module('graphwikiApp')
 		$scope.searchSuggests = []
 		$scope.browseHistory = []
 
+		$scope.showNodes = false;
+
+		$scope.toggleGraph = () -> 
+			$scope.showNodes = !$scope.showNodes
+
 		# how we render the graph
 		Renderer = (canv) ->
 			canvas = $(canv).get(0)

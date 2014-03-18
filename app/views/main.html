@@ -1,22 +1,31 @@
 <div class="single-column">
 
-	<canvas id="viewport" width="800" height="600"></canvas>
-  
-  <div class="form-wrapper">
-    <h1>GraphWiki</h1>
-    <form>
-      <input type="text" ng-model="wikiSearch" placeholder="Search Wikipedia" typeahead="suggest for suggest in searchSuggests" typeahead-on-select="searchWiki()" class="form-control">
-    </form>
-  </div>
-  
-  <div class="loader" ng-show="loading">
-    <div class="clock"></div>
-  </div>
+	<div class="nodes">
+		<img src="/images/share.svg" alt="nodes">
+	</div>
+	<div class="form-wrapper">
+		<h1>GraphWiki</h1>
+		<form>
+			<input type="text" ng-model="wikiSearch" placeholder="Search Wikipedia" typeahead="suggest for suggest in searchSuggests" typeahead-on-select="searchWiki()" class="form-control">
+		</form>
+	</div>
 
-  
-  <div class="wiki-text">
-    <div ng-bind-html="wikiText"></div>
-  </div>
+	<!-- let's wrap the canvas in an ng-show -->
+	<div class="main-button graph" ng-click="toggleGraph()">Show Wiki Graph</div>
+	<div class="graph-view" ng-show="showNodes">
+		<div class="canvas-wrapper">
+			<canvas id="viewport" width="800" height="600"></canvas>
+		</div>
+	</div>
+
+	<div class="loader" ng-show="loading">
+		<div class="clock"></div>
+	</div>
+
+
+	<div class="wiki-text">
+		<div ng-bind-html="wikiText"></div>
+	</div>
 
 
 	<span id="forkongithub"><a href="https://github.com/smothers/graphwiki">Fork me on GitHub</a></span>
