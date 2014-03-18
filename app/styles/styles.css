@@ -1,4 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400);
+@import url(http://fonts.googleapis.com/css?family=Vollkorn);
 html,
 body {
   font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
@@ -14,7 +15,7 @@ input {
   color: #000000;
   line-height: 1.5em;
   padding: .5em;
-  width: 600px;
+  width: 950px;
   border-radius: 5px;
   outline: none;
   border: 1px #AFAFAF solid;
@@ -30,16 +31,38 @@ h1 {
   font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
   font-size: 3em;
   font-weight: 300;
-  color: #61528e;
+  color: #26a6d1;
   line-height: 1.5em;
+}
+.graph-view .canvas-wrapper {
+  border: 1px solid #26a6d1;
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  height: auto;
+  z-index: 2000;
+  margin-left: -350px;
+  background: #fff;
+  border-radius: 5px;
+  webkit-border-radius: 5px;
+  margin-top: -150px;
+}
+.graph-view .canvas-wrapper h3 {
+  font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
+  font-size: 1.3em;
+  font-weight: 300;
+  color: #26a6d1;
+  line-height: 1.5em;
+  text-align: center;
 }
 .single-column {
   width: 960px;
   margin: 0 auto;
+  padding: 5em 0 0 0;
 }
 .main-button {
   color: #fff;
-  background: #61528e;
+  background: #26a6d1;
   width: 150px;
   display: inline-block;
   cursor: pointer;
@@ -47,11 +70,23 @@ h1 {
   -webkit-transition: ease-in-out 0.3s;
   -moz-transition: ease-in-out 0.3s;
   -ms-transition: ease-in-out 0.3s;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  padding: .5em;
+  text-align: center;
 }
 .main-button:hover {
-  background: #fff;
-  border: 1px solid #61528e;
-  color: #61528e;
+  background: #2980b9;
+  color: #fff;
+}
+.graph {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  height: 25px;
+  margin: 1em;
 }
 .form-wrapper {
   text-align: center;
@@ -213,4 +248,111 @@ h1 {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
   }
+}
+.wiki-text {
+  font-size: .95em;
+}
+.wiki-text h1,
+.wiki-text h2,
+.wiki-text h3,
+.wiki-text h4,
+.wiki-text h5,
+.wiki-text h6 {
+  font-family: 'Vollkorn', serif;
+  color: #2c3e50;
+  text-transform: uppercase;
+}
+.wiki-text h2 {
+  line-height: 1.5em;
+  border-bottom: 1px solid #26a6d1;
+}
+.wiki-text .toc {
+  font-size: .9em;
+  display: table;
+  zoom: 1;
+  padding: .5em 1.5em;
+  border: 1px solid #26a6d1;
+  background-color: #ECF0F1;
+  border-radius: 5px;
+}
+.wiki-text .toc h2 {
+  font-size: 1.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.wiki-text .thumb {
+  max-width: 250px;
+  margin: 0 .5em;
+  float: right;
+  clear: right;
+}
+.wiki-text .magnify {
+  float: right;
+}
+.wiki-text .thumbinner {
+  margin: 0 1em;
+  border: 1px solid #ccc;
+  padding: 3px !important;
+  background-color: #f9f9f9;
+  font-size: .9em;
+  text-align: center;
+  overflow: hidden;
+  width: 95%;
+}
+.wiki-text .mw-editsection {
+  display: none;
+}
+.wiki-text a {
+  color: #26a6d1;
+  transition: ease-in-out 0.3s;
+  -webkit-transition: ease-in-out 0.3s;
+  -moz-transition: ease-in-out 0.3s;
+  -ms-transition: ease-in-out 0.3s;
+}
+.wiki-text a:hover {
+  color: #2c3e50;
+}
+.wiki-text ul {
+  list-style: none;
+  padding-left: 0;
+}
+.wiki-text .infobox {
+  float: right;
+  clear: right;
+  border-collapse: collapse;
+  width: 300px;
+  border: 1px solid #61528e;
+  font-size: .7em;
+  font-weight: 400;
+}
+.wiki-text .category {
+  background: #61528e;
+  color: #fff;
+  text-align: center;
+}
+.wiki-text .gallerybox {
+  max-width: 155px;
+  display: inline-block;
+  vertical-align: top;
+}
+.wiki-text .gallerybox .thumb {
+  text-align: center;
+  padding: .5em;
+  clear: none;
+  float: none;
+  border: 1px solid #26a6d1;
+  border-radius: 5px;
+  vertical-align: top;
+}
+.wiki-text .gallerybox .gallerytext {
+  text-align: center;
+  font-size: .75em;
+  line-height: 1.5em;
+  overflow: hidden;
+}
+.nodes {
+  text-align: center;
+}
+.nodes img {
+  height: 150px;
 }

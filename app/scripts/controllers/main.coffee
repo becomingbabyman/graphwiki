@@ -7,12 +7,16 @@ angular.module('graphwikiApp')
 		$scope.searchSuggests = []
 		$scope.browseHistory = []
 
-
 		$scope.$watch(() ->
 			$location.path();
 		, () ->
 			console.log($location.path())
 		)
+
+		$scope.showNodes = false;
+
+		$scope.toggleGraph = () -> 
+			$scope.showNodes = !$scope.showNodes
 
 		# how we render the graph
 		Renderer = (canv) ->
@@ -246,7 +250,7 @@ angular.module('graphwikiApp')
 			$scope.loading = true
 			$http.jsonp('http://en.wikipedia.org/w/api.php?action=parse&page=' + $scope.wikiSearch + '&prop=text&format=json&callback=JSON_CALLBACK').success((data) ->
 				wikiLinkFixer = (text) ->
-					text.replace(/href="\/wiki\/(.*?)"/g, "href='#/wiki/$1'")
+					text.replace(/href="\/wiki\/(.*?)"/g, "href='/wiki/$1'")
 				$scope.wikiText = wikiLinkFixer data.parse.text['*']
 				# console.log($scope.wikiText)
 				# console.log(data)

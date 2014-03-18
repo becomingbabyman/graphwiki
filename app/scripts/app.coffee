@@ -17,3 +17,5 @@ angular.module('graphwikiApp', [
   #       controller: 'MainCtrl'
   #     # .otherwise
   #     #   redirectTo: '/'
+  .config ($routeProvider, $locationProvider) ->
+    $locationProvider.html5Mode(true)
