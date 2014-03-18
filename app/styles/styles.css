@@ -41,11 +41,19 @@ h1 {
   left: 50%;
   height: auto;
   z-index: 2000;
-  margin-left: -400px;
+  margin-left: -350px;
   background: #fff;
   border-radius: 5px;
   webkit-border-radius: 5px;
   margin-top: -150px;
+}
+.graph-view .canvas-wrapper h3 {
+  font-family: 'Source Sans Pro', 'HelveticaNeue', sans-serif;
+  font-size: 1.3em;
+  font-weight: 300;
+  color: #26a6d1;
+  line-height: 1.5em;
+  text-align: center;
 }
 .single-column {
   width: 960px;
