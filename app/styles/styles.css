@@ -267,8 +267,8 @@ h1 {
   border-bottom: 1px solid #26a6d1;
 }
 .wiki-text .toc {
+  display: none;
   font-size: .9em;
-  display: table;
   zoom: 1;
   padding: .5em 1.5em;
   border: 1px solid #26a6d1;
